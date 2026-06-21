@@ -1,0 +1,999 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+:root,
+[data-theme="dark"] {
+  --css-bg: #15171c;
+  --css-panel: #1d2129;
+  --css-panel-alt: #242832;
+  --css-border: #2f3440;
+  --css-text: #e6e6ea;
+  --css-text-muted: #8b919e;
+  --css-accent: #e8a23d;
+  --css-accent-soft: rgba(232, 162, 61, 0.15);
+  --css-success: #4caf7d;
+  --css-danger: #e0645a;
+  --css-font-ui: "Inter", system-ui, sans-serif;
+  --css-font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+/*
+ * Tema claro: pensado para proyección en clase. Fondo blanco puro (no gris)
+ * porque los proyectores de baja calidad lavan los grises intermedios y
+ * reducen el contraste. El acento se oscurece respecto al tema oscuro para
+ * mantener legibilidad sobre fondo claro (un ámbar claro se perdería).
+ */
+[data-theme="light"] {
+  --css-bg: #ffffff;
+  --css-panel: #f4f5f7;
+  --css-panel-alt: #e8eaee;
+  --css-border: #c7cbd4;
+  --css-text: #1a1d23;
+  --css-text-muted: #555b66;
+  --css-accent: #b5700a;
+  --css-accent-soft: rgba(181, 112, 10, 0.14);
+  --css-success: #1f8a5c;
+  --css-danger: #c43d33;
+  --css-font-ui: "Inter", system-ui, sans-serif;
+  --css-font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+/* Transición suave al alternar tema, sin afectar al resto de animaciones. */
+body,
+.code-viewer,
+.teacher-dashboard,
+.upload-dropzone {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--css-font-ui);
+  background-color: var(--css-bg);
+  color: var(--css-text);
+}
+
+code,
+.font-mono {
+  font-family: var(--css-font-mono);
+}
+
+a {
+  color: var(--css-accent);
+}
+
+/* --- Vista de alumno: zona de subida --- */
+
+.upload-dropzone {
+  border: 2px dashed var(--css-border);
+  border-radius: 12px;
+  background-color: var(--css-panel);
+  padding: 3rem 1.5rem;
+  text-align: center;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.upload-dropzone--active {
+  border-color: var(--css-accent);
+  background-color: var(--css-accent-soft);
+}
+
+.upload-dropzone__icon {
+  font-size: 2.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-control:focus {
+  background-color: var(--css-panel-alt);
+  border-color: var(--css-border);
+  color: var(--css-text);
+}
+
+.form-control::placeholder{
+  color: var(--css-text) !important;
+  opacity: 0.5;
+}
+
+.form-control:focus {
+  border-color: var(--css-accent);
+  box-shadow: 0 0 0 0.2rem var(--css-accent-soft);
+}
+
+.form-label {
+  color: var(--css-text);
+}
+
+.form-text,
+.text-muted {
+  color: var(--css-text-muted) !important;
+}
+
+.btn-primary {
+  background-color: var(--css-accent);
+  border-color: var(--css-accent);
+  color: #1a1300;
+  font-weight: 600;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #f3b35c;
+  border-color: #f3b35c;
+  color: #1a1300;
+}
+
+.btn-outline-secondary {
+  border-color: var(--css-border);
+  color: var(--css-text-muted);
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--css-panel-alt);
+  color: var(--css-text);
+}
+
+.btn-info {
+  background-color: var(--css-accent);
+  border-color: var(--css-accent);
+  color: #1a1300;
+}
+
+.alert-success {
+  background-color: rgba(76, 175, 125, 0.15);
+  border-color: var(--css-success);
+  color: var(--css-success);
+}
+
+.alert-danger {
+  background-color: rgba(224, 100, 90, 0.15);
+  border-color: var(--css-danger);
+  color: var(--css-danger);
+}
+
+.alert-info {
+  background-color: var(--css-accent-soft);
+  border-color: var(--css-accent);
+  color: var(--css-accent);
+}
+
+.alert-warning {
+  background-color: rgba(232, 162, 61, 0.12);
+  border-color: var(--css-accent);
+  color: var(--css-text);
+}
+
+/* --- Vista del profesor: layout tipo IDE --- */
+
+.teacher-dashboard {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--css-bg);
+}
+
+.teacher-dashboard__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--css-border);
+  background-color: var(--css-panel);
+}
+
+.nav-tabs {
+  border-bottom-color: var(--css-border);
+}
+
+.nav-tabs .nav-link {
+  color: var(--css-text-muted);
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-weight: 500;
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--css-accent);
+  background-color: transparent;
+  border-bottom: 2px solid var(--css-accent);
+}
+
+.teacher-dashboard__body {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.teacher-dashboard__sidebar,
+.teacher-dashboard__tree {
+  height: 100%;
+  overflow-y: auto;
+  background-color: var(--css-panel);
+}
+
+.teacher-dashboard__viewer {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+  min-width: 0;
+  background-color: var(--css-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.teacher-dashboard__footer {
+  border-top: 1px solid var(--css-border);
+  background-color: var(--css-panel);
+}
+
+/* Lista de alumnos */
+
+.student-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: left;
+  padding: 0.55rem 1rem;
+  color: var(--css-text);
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: background-color 0.1s ease;
+}
+
+.student-item:hover {
+  background-color: var(--css-panel-alt);
+}
+
+.student-item--active {
+  background-color: var(--css-panel-alt);
+  border-left-color: var(--css-accent);
+  color: var(--css-accent);
+}
+
+/* Árbol de ficheros */
+
+.file-tree {
+  padding-bottom: 1rem;
+}
+
+.tree-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  color: var(--css-text);
+  padding: 0.35rem 0.5rem;
+  font-size: 0.9rem;
+  font-family: var(--css-font-mono);
+  white-space: nowrap;
+}
+
+.tree-item:hover {
+  background-color: var(--css-panel-alt);
+}
+
+.tree-item--selected {
+  background-color: var(--css-accent-soft);
+  color: var(--css-accent);
+}
+
+.tree-item--folder {
+  font-family: var(--css-font-ui);
+}
+
+/* Visor de código */
+
+.code-viewer {
+  display: flex;
+  flex-direction: column;
+  /* min-height: 0 es clave en flex: sin él el hijo no puede encogerse
+     y el contenedor se expande indefinidamente en lugar de hacer scroll. */
+  min-height: 0;
+  height: 100%;
+}
+
+.code-viewer__header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--css-border);
+  background-color: var(--css-panel);
+  font-family: var(--css-font-mono);
+  font-size: 0.85rem;
+  color: var(--css-text-muted);
+}
+
+/*
+ * El editor ocupa todo el espacio restante por defecto, pero permite
+ * redimensionarse verticalmente (resize: vertical) para que el profesor
+ * ajuste cuánto código ve de un vistazo, especialmente útil al proyectar.
+ * flex: none es necesario para que el resize manual no sea sobreescrito
+ * en cada render por el flex: 1 anterior; min-height marca un tamaño
+ * mínimo razonable para no poder colapsarlo a 0 por error.
+ */
+.code-viewer .cm-editor {
+  flex: none;
+  height: 100%;
+  min-height: 160px;
+  overflow: auto;
+  resize: vertical;
+}
+
+.code-viewer .cm-scroller {
+  overflow: auto !important;
+}
+
+/* --- Visores multimedia --- */
+
+.media-viewer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow: auto;
+  background-color: var(--css-bg);
+}
+
+.media-viewer__img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.media-viewer__video {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 4px;
+}
+
+.media-viewer--audio {
+  gap: 0.5rem;
+  color: var(--css-text-muted);
+  text-align: center;
+}
+
+.media-viewer__audio-icon {
+  font-size: 2.5rem;
+}
+
+.media-viewer--binary {
+  gap: 0.75rem;
+  color: var(--css-text-muted);
+  text-align: center;
+}
+
+/* --- Botón de descarga en la lista de alumnos --- */
+
+.student-item {
+  /* Ahora es un div contenedor, no un botón */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.55rem 1rem;
+  border-left: 3px solid transparent;
+  transition: background-color 0.1s ease;
+}
+
+.student-item--active {
+  background-color: var(--css-panel-alt);
+  border-left-color: var(--css-accent);
+}
+
+.student-item--active .student-item__name {
+  color: var(--css-accent);
+}
+
+.student-item:hover {
+  background-color: var(--css-panel-alt);
+}
+
+.student-item__name {
+  flex: 1;
+  background: none;
+  border: none;
+  text-align: left;
+  color: var(--css-text);
+  font-weight: 500;
+  padding: 0;
+  cursor: pointer;
+}
+
+.student-item__download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 4px;
+  color: var(--css-text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.student-item__download:hover {
+  background-color: var(--css-accent-soft);
+  color: var(--css-accent);
+}
+
+/* --- Comparador libre --- */
+
+.compare-view-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  /* Mínimo útil para que el comparador sea navegable aunque haya pocas filas */
+  min-height: 520px;
+}
+
+.compare-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: 0.75rem;
+}
+
+.compare-view__toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--css-border);
+}
+
+.compare-view__grid {
+  gap: 0.75rem;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  overflow: auto;
+}
+
+/* Modo columnas: flexbox en horizontal. Cada .compare-col reparte el ancho
+   mediante flex-grow (proporción relativa) + flex-basis: 0, así que entre
+   todas SIEMPRE llenan el 100% del ancho disponible, sin huecos vacíos ni
+   desbordamiento. El tirador de cada columna solo cambia la proporción
+   relativa respecto a las demás, no un tamaño absoluto. flex-wrap permite
+   que, si min-width fuerza que no quepan todas en una fila (muchas
+   columnas en pantalla estrecha), las sobrantes pasen a la siguiente fila
+   en vez de comprimirse hasta ser inutilizables. */
+.compare-view__grid--columns {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.compare-view__grid--columns .compare-col {
+  min-height: 420px;
+  /* La columna se estira a la altura completa de la fila (stretch del
+     padre), de modo que el área del editor tenga espacio real para
+     scrollear con comodidad. Sin esto, las columnas tendían a quedarse en
+     su min-height mínimo, dejando muy poco alto utilizable para el código
+     y dando la sensación de que el scroll estaba "atascado" o acoplado. */
+  height: 100%;
+}
+
+/* Modo filas: cada tarjeta ocupa el ancho completo y se apilan en vertical. */
+.compare-view__grid--rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.compare-view__grid--rows .compare-col {
+  width: 100% !important;
+  min-height: 320px;
+}
+
+/* Cada columna del comparador */
+.compare-col {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border: 1px solid var(--css-border);
+  border-radius: 8px;
+  overflow: visible;
+  background-color: var(--css-panel);
+}
+
+.compare-col__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--css-border);
+  border-radius: 8px 8px 0 0;
+  flex-shrink: 0;
+  background-color: var(--css-panel-alt);
+}
+
+.compare-col__selector {
+  flex: 1;
+  background-color: var(--css-panel);
+  border-color: var(--css-border);
+  color: var(--css-text);
+  font-size: 0.85rem;
+}
+
+.compare-col__selector:focus {
+  border-color: var(--css-accent);
+  box-shadow: 0 0 0 0.15rem var(--css-accent-soft);
+}
+
+.compare-col__remove {
+  background: none;
+  border: none;
+  color: var(--css-text-muted);
+  font-size: 0.8rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+.compare-col__remove:hover {
+  background-color: rgba(224, 100, 90, 0.15);
+  color: var(--css-danger);
+}
+
+/* El cuerpo de la columna: árbol arriba (alto ajustable) + visor abajo (crece).
+   overflow visible para que el tirador de alto del árbol (que sobresale
+   ligeramente hacia abajo) no quede recortado. */
+.compare-col__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: visible;
+}
+
+/* El árbol ahora tiene alto ajustable (style inline desde JS) en vez de
+   max-height fijo. position: relative aloja el tirador inferior. */
+.compare-col__tree {
+  position: relative;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--css-border);
+  font-size: 0.82rem;
+}
+
+.compare-col__tree-scroll {
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Tirador horizontal para ajustar el alto del árbol, en el borde inferior */
+.compare-col__tree-handle {
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  cursor: row-resize;
+  z-index: 5;
+  background-color: transparent;
+  transition: background-color 0.15s ease;
+}
+
+.compare-col__tree-handle:hover {
+  background-color: var(--css-accent);
+}
+
+/* Botón para colapsar el árbol de ficheros, esquina superior derecha del árbol */
+.compare-col__tree-collapse-btn {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+  width: 1.3rem;
+  height: 1.3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--css-panel-alt);
+  border: 1px solid var(--css-border);
+  border-radius: 4px;
+  color: var(--css-text-muted);
+  font-size: 0.7rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 4;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.compare-col__tree-collapse-btn:hover {
+  background-color: var(--css-accent-soft);
+  color: var(--css-accent);
+  border-color: var(--css-accent);
+}
+
+/* Barra delgada que sustituye al árbol cuando está colapsado */
+.compare-col__tree-collapsed {
+  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border: none;
+  border-bottom: 1px solid var(--css-border);
+  background-color: var(--css-panel);
+  color: var(--css-text-muted);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.compare-col__tree-collapsed:hover {
+  background-color: var(--css-panel-alt);
+  color: var(--css-accent);
+}
+
+/* Tirador vertical para ajustar el ancho de la columna, en el borde derecho */
+.compare-col__width-handle {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 6;
+  background-color: transparent;
+  transition: background-color 0.15s ease;
+}
+
+.compare-col__width-handle:hover {
+  background-color: var(--css-accent);
+}
+
+.compare-col__viewer {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  border-radius: 0 0 8px 8px;
+}
+
+.compare-col__empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--css-text-muted);
+  font-size: 0.85rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* El code-viewer dentro de una columna del comparador hereda bien el flex */
+.compare-col__viewer .code-viewer {
+  flex: 1;
+  min-height: 0;
+}
+
+.compare-col__viewer .cm-scroller {
+  overflow: auto !important;
+}
+
+/* Mientras se arrastra un tirador de alto de árbol, evita selección de
+   texto en toda la página, igual que con el resize de paneles horizontal. */
+body.is-resizing-panel-v {
+  cursor: row-resize;
+  user-select: none;
+}
+
+/* --- Toggle de tema --- */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: var(--css-panel-alt);
+  border: 1px solid var(--css-border);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  color: var(--css-text);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.theme-toggle:hover {
+  background-color: var(--css-accent-soft);
+  border-color: var(--css-accent);
+}
+
+.theme-toggle__label {
+  white-space: nowrap;
+}
+
+/* En pantallas estrechas (móvil del alumno) el texto del toggle no estorba */
+@media (max-width: 420px) {
+  .theme-toggle__label {
+    display: none;
+  }
+}
+
+/* --- Modal de confirmación de subida --- */
+
+.upload-modal {
+  background-color: var(--css-panel);
+  color: var(--css-text);
+  border: 1px solid var(--css-border);
+}
+
+.upload-modal .modal-header,
+.upload-modal .modal-footer {
+  border-color: var(--css-border);
+}
+
+.upload-modal .modal-title {
+  color: var(--css-text);
+}
+
+/* El botón de cerrar de Bootstrap es un SVG oscuro fijo; en tema oscuro
+   necesita invertirse para seguir siendo visible. */
+[data-theme="dark"] .upload-modal .btn-close {
+  filter: invert(1) grayscale(100%);
+}
+
+.upload-modal__summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--css-border);
+}
+
+.upload-modal__section {
+  margin-bottom: 1rem;
+}
+
+.upload-modal__section:last-child {
+  margin-bottom: 0;
+}
+
+.upload-modal__section-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.5rem;
+}
+
+.upload-modal__file-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--css-border);
+  border-radius: 6px;
+}
+
+.upload-modal__file-list li {
+  padding: 0.35rem 0.7rem;
+  border-bottom: 1px solid var(--css-border);
+  font-family: var(--css-font-mono);
+  font-size: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.upload-modal__file-list li:last-child {
+  border-bottom: none;
+}
+
+.upload-modal__file-list--rejected li code {
+  color: var(--css-danger);
+}
+
+.text-success-emphasis {
+  color: var(--css-success) !important;
+}
+
+.text-warning-emphasis {
+  color: var(--css-accent) !important;
+}
+
+/* --- Botón de copiar código --- */
+
+.copy-button {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background-color: var(--css-panel-alt);
+  border: 1px solid var(--css-border);
+  border-radius: 5px;
+  padding: 0.2rem 0.6rem;
+  font-family: var(--css-font-ui);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--css-text-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.copy-button:hover {
+  background-color: var(--css-accent-soft);
+  border-color: var(--css-accent);
+  color: var(--css-accent);
+}
+
+.copy-button--copied {
+  background-color: rgba(76, 175, 125, 0.15);
+  border-color: var(--css-success);
+  color: var(--css-success);
+}
+
+/* --- Toggle de disposición filas/columnas (comparador) --- */
+
+.layout-toggle {
+  display: inline-flex;
+  border: 1px solid var(--css-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.layout-toggle__option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background-color: var(--css-panel);
+  border: none;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--css-text-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.layout-toggle__option:not(:last-child) {
+  border-right: 1px solid var(--css-border);
+}
+
+.layout-toggle__option:hover {
+  background-color: var(--css-panel-alt);
+  color: var(--css-text);
+}
+
+.layout-toggle__option--active {
+  background-color: var(--css-accent-soft);
+  color: var(--css-accent);
+}
+
+/* --- Panel lateral redimensionable y colapsable --- */
+
+.resizable-panel {
+  position: relative;
+  flex-shrink: 0;
+  height: 100%;
+  display: flex;
+  border-right: 1px solid var(--css-border);
+  background-color: var(--css-panel);
+}
+
+.resizable-panel__content {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Tirador de arrastre: una franja delgada en el borde derecho del panel.
+   Se ensancha visualmente al hacer hover para que sea fácil de agarrar. */
+.resizable-panel__handle {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 5;
+  background-color: transparent;
+  transition: background-color 0.15s ease;
+}
+
+.resizable-panel__handle:hover {
+  background-color: var(--css-accent);
+}
+
+/* Mientras se arrastra, deshabilitamos la selección de texto en toda la
+   página para que el drag no seleccione contenido accidentalmente. */
+body.is-resizing-panel {
+  cursor: col-resize;
+  user-select: none;
+}
+
+/* Botón para colapsar el panel: una pestaña pequeña en la esquina
+   superior derecha del panel, discreta pero accesible. */
+.resizable-panel__collapse-btn {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  width: 1.4rem;
+  height: 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--css-panel-alt);
+  border: 1px solid var(--css-border);
+  border-radius: 4px;
+  color: var(--css-text-muted);
+  font-size: 0.8rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 4;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.resizable-panel__collapse-btn:hover {
+  background-color: var(--css-accent-soft);
+  color: var(--css-accent);
+  border-color: var(--css-accent);
+}
+
+/* Pestaña delgada que sustituye al panel cuando está colapsado: ocupa
+   poco ancho y deja un texto vertical para identificar qué contiene. */
+.resizable-panel__collapsed-tab {
+  flex-shrink: 0;
+  height: 100%;
+  width: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  padding-top: 0.6rem;
+  background-color: var(--css-panel);
+  border: none;
+  border-right: 1px solid var(--css-border);
+  color: var(--css-text-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.resizable-panel__collapsed-tab:hover {
+  background-color: var(--css-panel-alt);
+  color: var(--css-accent);
+}
+
+.resizable-panel__collapsed-label {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}

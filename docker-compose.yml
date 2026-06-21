@@ -1,0 +1,44 @@
+services:
+  backend:
+    build: ./backend
+    container_name: codeaula_backend
+    restart: unless-stopped
+    environment:
+      DJANGO_SECRET_KEY: "cambia-esta-clave-en-tu-aula"
+      DJANGO_DEBUG: "true"
+      DB_PATH: "/data/db.sqlite3"
+      MEDIA_ROOT: "/data/media"
+    volumes:
+      # Código fuente: hot-reload sin reconstruir imagen.
+      - ./backend:/app
+      # Datos persistentes en un volumen separado, fuera del código.
+      # Esto evita el conflicto entre el bind-mount y la BD/media.
+      - codeaula_data:/data
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/workspaces/')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build: ./frontend
+    container_name: codeaula_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/index.html:/app/index.html
+      # node_modules como volumen CON NOMBRE (no anónimo): evita que el
+      # bind-mount de ./frontend/src sobrescriba las dependencias instaladas
+      # dentro de la imagen, y se reutiliza entre arranques en vez de crear
+      # un volumen nuevo cada vez (lo que antes acumulaba basura en disco).
+      - codeaula_node_modules:/app/node_modules
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+
+volumes:
+  codeaula_data:
+  codeaula_node_modules:

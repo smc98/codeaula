@@ -1,0 +1,7 @@
+# Variables de entorno locales: cada profesor/aula puede tener su propia
+# configuración de puertos sin que afecte al repositorio.
+.env
+
+# Sistemas operativos
+.DS_Store
+Thumbs.db
