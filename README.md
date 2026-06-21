@@ -4,7 +4,8 @@ Herramienta para compartir y revisar código en tiempo real dentro de una red lo
 
 ## Demo
 
-<video src="docs/demo.mp4" controls autoplay loop muted width="900"></video>
+https://github.com/user-attachments/assets/ca2477d5-bfb3-4687-a6c9-209131b5f278
+
 
 ## Caso de uso
 
